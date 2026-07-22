@@ -1,0 +1,6 @@
+{
+  "name": "Widget App Launcher",
+  "description": "Buat widget aplikasi kustom, pilih dari daftar aplikasi terpasang atau masukan nama paket, kustomisasi nama & ikon, serta backup dan restore.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
