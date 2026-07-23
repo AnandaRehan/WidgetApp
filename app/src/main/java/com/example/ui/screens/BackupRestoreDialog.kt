@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Restore
@@ -175,7 +174,7 @@ fun BackupRestoreDialog(
                     ) {
                         OutlinedButton(
                             onClick = {
-                                viewModel.restorePresetSamples()
+                                viewModel.restorePresetSamples(context)
                                 Toast.makeText(context, "Preset widget sampel berhasil dipulihkan!", Toast.LENGTH_SHORT).show()
                                 onDismiss()
                             },
@@ -192,7 +191,7 @@ fun BackupRestoreDialog(
                                     return@Button
                                 }
                                 isProcessing = true
-                                viewModel.importBackup(jsonInput, appendMode) { result ->
+                                viewModel.importBackup(context, jsonInput, appendMode) { result ->
                                     isProcessing = false
                                     result.onSuccess { count ->
                                         Toast.makeText(context, "Berhasil memulihkan $count widget!", Toast.LENGTH_SHORT).show()

@@ -2,19 +2,21 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val IndigoPrimary = Color(0xFF6366F1)
-val IndigoSecondary = Color(0xFF818CF8)
+// Immersive Dark Theme Palette
+val ImmersiveBackground = Color(0xFF1C1B1F)
+val ImmersiveSurface = Color(0xFF25232A)
+val ImmersiveSurfaceVariant = Color(0xFF332D41)
+val ImmersiveInputBg = Color(0xFF2B293B)
+val ImmersiveBorder = Color(0xFF49454F)
+
+val LavenderAccent = Color(0xFFD0BCFF)
+val PurplePrimary = Color(0xFF4F378B)
+val PurpleContainer = Color(0xFF381E72)
+val LightPurpleText = Color(0xFFE8DEF8)
+
+val TextPrimary = Color(0xFFE6E1E5)
+val TextSecondary = Color(0xFF938F99)
+
 val MintAccent = Color(0xFF10B981)
-val DarkBackground = Color(0xFF0F172A)
-val DarkSurface = Color(0xFF1E293B)
-val DarkSurfaceVariant = Color(0xFF334155)
-
-val TextPrimaryDark = Color(0xFFF8FAFC)
-val TextSecondaryDark = Color(0xFF94A3B8)
-
-val LightBackground = Color(0xFFF8FAFC)
-val LightSurface = Color(0xFFFFFFFF)
-val LightSurfaceVariant = Color(0xFFE2E8F0)
-
-val TextPrimaryLight = Color(0xFF0F172A)
-val TextSecondaryLight = Color(0xFF64748B)
+val RedAccent = Color(0xFFEF4444)
+val AmberAccent = Color(0xFFF59E0B)

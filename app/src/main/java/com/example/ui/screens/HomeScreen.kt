@@ -9,13 +9,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Launch
-import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Search
@@ -54,18 +54,26 @@ fun HomeScreen(viewModel: WidgetViewModel) {
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.Widgets,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(28.dp)
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Widgets,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
                         Column {
                             Text(
-                                text = "Widget App",
+                                text = "Widget Studio",
                                 style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                             Text(
                                 text = "Pintasan Aplikasi Kustom",
@@ -78,7 +86,9 @@ fun HomeScreen(viewModel: WidgetViewModel) {
                 actions = {
                     IconButton(
                         onClick = { showBackupDialog = true },
-                        modifier = Modifier.testTag("backup_restore_top_button")
+                        modifier = Modifier
+                            .testTag("backup_restore_top_button")
+                            .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                     ) {
                         Icon(Icons.Default.Restore, contentDescription = "Backup & Restore", tint = MaterialTheme.colorScheme.primary)
                     }
@@ -93,9 +103,10 @@ fun HomeScreen(viewModel: WidgetViewModel) {
                     showCreateDialog = true
                 },
                 icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text("Buat Widget", fontWeight = FontWeight.Bold) },
+                text = { Text("Buat Custom", fontWeight = FontWeight.Bold) },
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                shape = RoundedCornerShape(18.dp),
                 modifier = Modifier.testTag("create_widget_fab")
             )
         }
@@ -116,36 +127,40 @@ fun HomeScreen(viewModel: WidgetViewModel) {
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "🚀 Buat & Pasang Widget Aplikasi",
+                        text = "✨ Buat & Pasang Widget Aplikasi",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Pilih aplikasi dari daftar, atau masukkan nama paket kustom. Sesuaikan nama, ikon, dan warna widget sesuai keinginan Anda.",
+                        text = "Pilih aplikasi dari daftar atau input nama paket manual. Setiap widget yang dipasang ke layar utama akan membuka aplikasi yang tepat secara independen.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // SEARCH BAR FOR SAVED WIDGETS
+            // PILL SEARCH BAR FOR SAVED WIDGETS
             OutlinedTextField(
                 value = widgetSearchQuery,
                 onValueChange = { viewModel.setWidgetSearchQuery(it) },
                 placeholder = { Text("Cari widget disimpan (nama / paket)...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("search_saved_widgets_input"),
-                shape = RoundedCornerShape(14.dp)
+                shape = CircleShape,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             if (savedWidgets.isEmpty()) {
                 Box(
@@ -158,32 +173,39 @@ fun HomeScreen(viewModel: WidgetViewModel) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(24.dp)
                     ) {
-                        Icon(
-                            Icons.Default.Widgets,
-                            contentDescription = null,
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Widgets,
+                                contentDescription = null,
+                                modifier = Modifier.size(40.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = if (widgetSearchQuery.isNotBlank()) "Tidak ada widget yang cocok." else "Belum ada widget disimpan",
+                            text = if (widgetSearchQuery.isNotBlank()) "Tidak ada widget yang cocok." else "Belum Ada Widget Disimpan",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(6.dp))
                         Text(
-                            text = "Tekan tombol 'Buat Widget' atau gunakan contoh preset untuk memulai.",
+                            text = "Tekan 'Buat Custom' untuk memilih aplikasi & mendesain widget kustom Anda.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             OutlinedButton(
-                                onClick = { viewModel.restorePresetSamples() },
-                                shape = RoundedCornerShape(12.dp)
+                                onClick = { viewModel.restorePresetSamples(context) },
+                                shape = RoundedCornerShape(14.dp)
                             ) {
                                 Text("Muat Contoh Preset")
                             }
@@ -193,7 +215,7 @@ fun HomeScreen(viewModel: WidgetViewModel) {
                                     widgetToEdit = null
                                     showCreateDialog = true
                                 },
-                                shape = RoundedCornerShape(12.dp)
+                                shape = RoundedCornerShape(14.dp)
                             ) {
                                 Text("Buat Widget Baru")
                             }
@@ -225,7 +247,7 @@ fun HomeScreen(viewModel: WidgetViewModel) {
                                 widgetToEdit = widget
                                 showCreateDialog = true
                             },
-                            onDelete = { viewModel.deleteWidget(widget.id) }
+                            onDelete = { viewModel.deleteWidget(context, widget.id) }
                         )
                     }
                 }
@@ -263,8 +285,8 @@ fun SavedWidgetCard(
     }
 
     Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -272,15 +294,15 @@ fun SavedWidgetCard(
     ) {
         Column(
             modifier = Modifier
-                .padding(12.dp)
+                .padding(14.dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Widget Icon Preview
             Box(
                 modifier = Modifier
-                    .size(60.dp)
-                    .padding(4.dp),
+                    .size(62.dp)
+                    .padding(2.dp),
                 contentAlignment = Alignment.Center
             ) {
                 if (bitmap != null) {
@@ -293,12 +315,12 @@ fun SavedWidgetCard(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Gray, RoundedCornerShape(12.dp))
+                            .background(Color.Gray, RoundedCornerShape(14.dp))
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = widget.displayName,
@@ -316,32 +338,38 @@ fun SavedWidgetCard(
                 maxLines = 1
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Action Buttons Row 1: Pin & Launch
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Button(
                     onClick = onPin,
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(4.dp),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
-                    Icon(Icons.Default.PushPin, contentDescription = "Pin Widget", modifier = Modifier.size(14.dp))
-                    Spacer(modifier = Modifier.width(2.dp))
-                    Text("Pin", fontSize = 11.sp)
+                    Icon(
+                        Icons.Default.PushPin,
+                        contentDescription = "Pin Widget",
+                        modifier = Modifier.size(13.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Spacer(modifier = Modifier.width(3.dp))
+                    Text("Pin", fontSize = 11.sp, color = MaterialTheme.colorScheme.onPrimaryContainer, fontWeight = FontWeight.Bold)
                 }
 
                 OutlinedButton(
                     onClick = onTestLaunch,
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(4.dp),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(10.dp)
                 ) {
-                    Icon(Icons.Default.Launch, contentDescription = "Uji Buka", modifier = Modifier.size(14.dp))
-                    Spacer(modifier = Modifier.width(2.dp))
+                    Icon(Icons.Default.Launch, contentDescription = "Uji Buka", modifier = Modifier.size(13.dp))
+                    Spacer(modifier = Modifier.width(3.dp))
                     Text("Uji", fontSize = 11.sp)
                 }
             }
@@ -358,7 +386,7 @@ fun SavedWidgetCard(
                     onClick = onEdit,
                     contentPadding = PaddingValues(0.dp)
                 ) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit", modifier = Modifier.size(14.dp))
+                    Icon(Icons.Default.Edit, contentDescription = "Edit", modifier = Modifier.size(13.dp))
                     Spacer(modifier = Modifier.width(2.dp))
                     Text("Edit", fontSize = 11.sp)
                 }

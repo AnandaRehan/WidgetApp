@@ -85,16 +85,19 @@ class WidgetViewModel(
         _widgetSearchQuery.value = query
     }
 
-    fun saveWidget(widget: CustomWidget, onComplete: ((Long) -> Unit)? = null) {
+    fun saveWidget(context: Context, widget: CustomWidget, onComplete: ((Long) -> Unit)? = null) {
         viewModelScope.launch {
             val id = repository.saveWidget(widget)
+            AppShortcutWidgetProvider.saveLatestPinWidgetId(context, id)
+            AppShortcutWidgetProvider.notifyAllWidgetsUpdate(context)
             onComplete?.invoke(id)
         }
     }
 
-    fun deleteWidget(id: Long) {
+    fun deleteWidget(context: Context, id: Long) {
         viewModelScope.launch {
             repository.deleteWidget(id)
+            AppShortcutWidgetProvider.notifyAllWidgetsUpdate(context)
         }
     }
 
@@ -102,40 +105,51 @@ class WidgetViewModel(
         return repository.exportBackup(rawSavedWidgets.value)
     }
 
-    fun importBackup(jsonString: String, appendMode: Boolean = true, onResult: (Result<Int>) -> Unit) {
+    fun importBackup(context: Context, jsonString: String, appendMode: Boolean = true, onResult: (Result<Int>) -> Unit) {
         viewModelScope.launch {
             val res = repository.importBackup(jsonString, appendMode)
+            AppShortcutWidgetProvider.notifyAllWidgetsUpdate(context)
             onResult(res)
         }
     }
 
-    fun restorePresetSamples() {
+    fun restorePresetSamples(context: Context) {
         viewModelScope.launch {
             val presets = com.example.utils.BackupRestoreManager.getPresetSamples()
             repository.restoreWidgets(presets, appendMode = true)
+            AppShortcutWidgetProvider.notifyAllWidgetsUpdate(context)
         }
     }
 
     fun pinWidgetToHomeScreen(context: Context, widget: CustomWidget) {
+        AppShortcutWidgetProvider.saveLatestPinWidgetId(context, widget.id)
+
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val providerComponent = ComponentName(context, AppShortcutWidgetProvider::class.java)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (appWidgetManager.isRequestPinAppWidgetSupported) {
                 val successIntent = Intent(context, AppShortcutWidgetProvider::class.java).apply {
-                    action = AppShortcutWidgetProvider.ACTION_LAUNCH_APP
+                    action = AppShortcutWidgetProvider.ACTION_WIDGET_PINNED
                     putExtra(AppShortcutWidgetProvider.EXTRA_PACKAGE_NAME, widget.packageName)
+                    putExtra(AppShortcutWidgetProvider.EXTRA_CUSTOM_WIDGET_ID, widget.id)
+                }
+
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
                 }
 
                 val successPendingIntent = PendingIntent.getBroadcast(
                     context,
                     widget.id.toInt(),
                     successIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    flags
                 )
 
                 appWidgetManager.requestPinAppWidget(providerComponent, null, successPendingIntent)
-                Toast.makeText(context, "Permintaan pin widget '${widget.displayName}' dikirim!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Permintaan pin widget '${widget.displayName}' dikirim ke layar utama!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(
                     context,
