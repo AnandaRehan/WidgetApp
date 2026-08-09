@@ -1,0 +1,6 @@
+{
+  "name": "WidgetApp",
+  "description": "Aplikasi Android modern untuk membuat, mengkustomisasi, dan memasang widget pemintas aplikasi di layar utama.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WidgetApp</string>
+    <string name="widget_provider_label">WidgetApp Shortcut</string>
+    <string name="widget_provider_description">Pemintas aplikasi custom untuk layar utama</string>
+</resources>
