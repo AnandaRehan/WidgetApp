@@ -2,7 +2,7 @@ package com.ehan.widgetapp.ui.viewmodel
 
 import android.app.Application
 import android.graphics.drawable.Drawable
-import android.widget.Toast
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ehan.widgetapp.data.AppDatabase
@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.File
 
 class WidgetAppViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -86,7 +87,7 @@ class WidgetAppViewModel(application: Application) : AndroidViewModel(applicatio
     private val _customWidgetName = MutableStateFlow("")
     val customWidgetName: StateFlow<String> = _customWidgetName.asStateFlow()
 
-    private val _customIconType = MutableStateFlow("DEFAULT") // "DEFAULT", "COLOR", "EMOJI"
+    private val _customIconType = MutableStateFlow("DEFAULT") // "DEFAULT", "COLOR", "EMOJI", "GALLERY"
     val customIconType: StateFlow<String> = _customIconType.asStateFlow()
 
     private val _customIconColor = MutableStateFlow("#4F46E5")
@@ -95,8 +96,14 @@ class WidgetAppViewModel(application: Application) : AndroidViewModel(applicatio
     private val _customIconEmoji = MutableStateFlow("📱")
     val customIconEmoji: StateFlow<String> = _customIconEmoji.asStateFlow()
 
-    private val _customIconShape = MutableStateFlow("SQUIRCLE") // "CIRCLE", "SQUIRCLE", "ROUNDED_SQUARE"
+    private val _customIconShape = MutableStateFlow("SQUIRCLE") // "CIRCLE", "SQUIRCLE", "ROUNDED_SQUARE", "FULL"
     val customIconShape: StateFlow<String> = _customIconShape.asStateFlow()
+
+    private val _customImageUri = MutableStateFlow<String?>(null)
+    val customImageUri: StateFlow<String?> = _customImageUri.asStateFlow()
+
+    private val _isTransparentBg = MutableStateFlow(false)
+    val isTransparentBg: StateFlow<Boolean> = _isTransparentBg.asStateFlow()
 
     private val _editingWidgetId = MutableStateFlow<Long?>(null)
 
@@ -182,6 +189,8 @@ class WidgetAppViewModel(application: Application) : AndroidViewModel(applicatio
         _customIconColor.value = "#4F46E5"
         _customIconEmoji.value = "📱"
         _customIconShape.value = "SQUIRCLE"
+        _customImageUri.value = null
+        _isTransparentBg.value = false
         _editingWidgetId.value = null
 
         closeManualPackageSheet()
@@ -196,6 +205,8 @@ class WidgetAppViewModel(application: Application) : AndroidViewModel(applicatio
         _customIconColor.value = "#4F46E5"
         _customIconEmoji.value = "📱"
         _customIconShape.value = "SQUIRCLE"
+        _customImageUri.value = null
+        _isTransparentBg.value = false
         _editingWidgetId.value = null
 
         closeInstalledAppsSheet()
@@ -217,6 +228,8 @@ class WidgetAppViewModel(application: Application) : AndroidViewModel(applicatio
         _customIconColor.value = widget.iconColorHex
         _customIconEmoji.value = widget.iconEmoji
         _customIconShape.value = widget.iconShape
+        _customImageUri.value = widget.customImageUri
+        _isTransparentBg.value = widget.isTransparentBg
         _editingWidgetId.value = widget.id
 
         _showCustomizeDialog.value = true
@@ -247,6 +260,35 @@ class WidgetAppViewModel(application: Application) : AndroidViewModel(applicatio
         _customIconShape.value = shape
     }
 
+    fun setCustomImageUri(uriString: String?) {
+        _customImageUri.value = uriString
+    }
+
+    fun setIsTransparentBg(isTransparent: Boolean) {
+        _isTransparentBg.value = isTransparent
+    }
+
+    fun copyGalleryUriToLocalStorage(uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val context = getApplication<Application>()
+                val dir = File(context.filesDir, "custom_icons")
+                if (!dir.exists()) dir.mkdirs()
+                val destFile = File(dir, "icon_${System.currentTimeMillis()}.png")
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    destFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                _customImageUri.value = destFile.absolutePath
+                emitUserMessage("Gambar dari Galeri berhasil dipasang!")
+            } catch (e: Exception) {
+                _customImageUri.value = uri.toString()
+                emitUserMessage("Gambar galeri dipilih")
+            }
+        }
+    }
+
     // Save Widget to Room Database
     fun saveWidget() {
         val appInfo = _selectedAppInfo.value ?: return
@@ -261,7 +303,9 @@ class WidgetAppViewModel(application: Application) : AndroidViewModel(applicatio
                 iconType = _customIconType.value,
                 iconColorHex = _customIconColor.value,
                 iconEmoji = _customIconEmoji.value,
-                iconShape = _customIconShape.value
+                iconShape = _customIconShape.value,
+                customImageUri = _customImageUri.value,
+                isTransparentBg = _isTransparentBg.value
             )
 
             if (_editingWidgetId.value != null && _editingWidgetId.value!! > 0L) {
@@ -290,7 +334,9 @@ class WidgetAppViewModel(application: Application) : AndroidViewModel(applicatio
                 iconType = _customIconType.value,
                 iconColorHex = _customIconColor.value,
                 iconEmoji = _customIconEmoji.value,
-                iconShape = _customIconShape.value
+                iconShape = _customIconShape.value,
+                customImageUri = _customImageUri.value,
+                isTransparentBg = _isTransparentBg.value
             )
 
             val newId = if (_editingWidgetId.value != null && _editingWidgetId.value!! > 0L) {

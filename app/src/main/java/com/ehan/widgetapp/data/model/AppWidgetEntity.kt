@@ -10,9 +10,11 @@ data class AppWidgetEntity(
     val customName: String,
     val originalName: String,
     val packageName: String,
-    val iconType: String = "DEFAULT", // "DEFAULT", "COLOR", "EMOJI"
+    val iconType: String = "DEFAULT", // "DEFAULT", "COLOR", "EMOJI", "GALLERY"
     val iconColorHex: String = "#6366F1",
     val iconEmoji: String = "📱",
-    val iconShape: String = "SQUIRCLE", // "CIRCLE", "SQUIRCLE", "ROUNDED_SQUARE"
+    val iconShape: String = "SQUIRCLE", // "CIRCLE", "SQUIRCLE", "ROUNDED_SQUARE", "FULL"
+    val customImageUri: String? = null,
+    val isTransparentBg: Boolean = false,
     val createdAt: Long = System.currentTimeMillis()
 )

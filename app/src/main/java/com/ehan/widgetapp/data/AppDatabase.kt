@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.ehan.widgetapp.data.dao.AppWidgetDao
 import com.ehan.widgetapp.data.model.AppWidgetEntity
 
-@Database(entities = [AppWidgetEntity::class], version = 1, exportSchema = false)
+@Database(entities = [AppWidgetEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun appWidgetDao(): AppWidgetDao
 

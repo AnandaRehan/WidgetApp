@@ -71,6 +71,8 @@ fun WidgetCard(
                     iconShape = widget.iconShape,
                     appDrawable = appDrawable,
                     fallbackName = widget.customName,
+                    customImageUri = widget.customImageUri,
+                    isTransparentBg = widget.isTransparentBg,
                     size = 56.dp
                 )
 

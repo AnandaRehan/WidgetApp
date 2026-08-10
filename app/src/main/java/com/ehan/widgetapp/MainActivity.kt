@@ -57,6 +57,8 @@ class MainActivity : ComponentActivity() {
             val customIconColor by viewModel.customIconColor.collectAsStateWithLifecycle()
             val customIconEmoji by viewModel.customIconEmoji.collectAsStateWithLifecycle()
             val customIconShape by viewModel.customIconShape.collectAsStateWithLifecycle()
+            val customImageUri by viewModel.customImageUri.collectAsStateWithLifecycle()
+            val isTransparentBg by viewModel.isTransparentBg.collectAsStateWithLifecycle()
 
             var userMessage by remember { mutableStateOf<String?>(null) }
 
@@ -128,6 +130,10 @@ class MainActivity : ComponentActivity() {
                             onIconEmojiChanged = { viewModel.setCustomIconEmoji(it) },
                             iconShape = customIconShape,
                             onIconShapeChanged = { viewModel.setCustomIconShape(it) },
+                            customImageUri = customImageUri,
+                            onPickGalleryImage = { uri -> viewModel.copyGalleryUriToLocalStorage(uri) },
+                            isTransparentBg = isTransparentBg,
+                            onIsTransparentBgChanged = { viewModel.setIsTransparentBg(it) },
                             onSave = { viewModel.saveWidget() },
                             onSaveAndPin = { viewModel.saveAndPinShortcutToHomeScreen() },
                             onDismiss = { viewModel.closeCustomizeDialog() }
