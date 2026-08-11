@@ -62,11 +62,15 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Decode Keystore from Secrets (if provided)
-        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > release.jks
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > release.jks
+            echo "Keystore release.jks decoded successfully."
+          else
+            echo "No KEYSTORE_BASE64 secret provided."
+          fi
 
       - name: Generate Gradle Wrapper if missing
         run: |
