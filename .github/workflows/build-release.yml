@@ -32,6 +32,25 @@ jobs:
             echo "No KEYSTORE_BASE64 secret provided."
           fi
 
+      - name: Check Signing Environment
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          if [ -f release.jks ]; then
+            echo "release.jks file exists."
+            if [ -n "$STORE_PASSWORD" ]; then
+              echo "STORE_PASSWORD secret is configured."
+            else
+              echo "WARNING: STORE_PASSWORD secret is empty. Release build will fallback to debug signing."
+            fi
+            if [ -n "$KEY_ALIAS" ]; then
+              echo "KEY_ALIAS secret is configured."
+            else
+              echo "WARNING: KEY_ALIAS secret is empty. Defaulting alias to 'upload'."
+            fi
+          fi
+
       - name: Generate Gradle Wrapper if missing
         run: |
           if [ ! -f ./gradlew ]; then
